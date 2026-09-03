@@ -1,0 +1,27 @@
+# Ignore everything by default
+*
+
+# Allow only what the build needs
+!go.mod
+!go.sum
+!cmd/
+!config/
+!delivery/
+!domain/
+!infrastructure/
+!repository/
+!usecase/
+!templates/
+
+# Never ship env files or secrets
+.env
+.env.*
+
+# Never ship VCS, docs, or test binaries
+.git
+*.md
+*_test.go
+*.exe
+*.out
+bin/
+dist/

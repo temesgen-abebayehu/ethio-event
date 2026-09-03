@@ -1,0 +1,51 @@
+# ===== Environment =====
+.env
+.env.*
+!.env.example
+
+# ===== Design reference (not part of the app) =====
+figma design/
+
+# ===== OS / Editor =====
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+.fleet
+*.swp
+*.swo
+*~
+
+# ===== Logs =====
+logs
+*.log
+
+# ===== Go (backend) =====
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+bin/
+main
+*.test
+*.out
+coverage.out
+go.work
+vendor/
+uploads/
+# Air live-reload build output
+tmp/
+build-errors.log
+
+# ===== Node / Next (frontend) =====
+node_modules
+.next
+.output
+.nuxt
+.nitro
+.cache
+dist
+next-env.d.ts
+*.tsbuildinfo
+.vercel
