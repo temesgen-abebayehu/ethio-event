@@ -116,69 +116,6 @@ npm run dev    # or: make front
 
 > The full Docker stack is also available: `make up` (frontend + backend + Postgres), plus `make down`, `make logs`, `make clean`.
 
-## Database Migrations
-
-Migrations live in `backend/migrations/` and apply **in order**:
-
-- `001_schema.sql` — tables and indexes
-- `002_functions.sql` — triggers (slug, updated_at, ticket counters) and `get_nearby_events`
-- `003_seed.sql` — default categories
-- `004_ticket_checkin.sql` — QR check-in columns (`scanned_at`, `scanned_by`)
-- `005_user_profile.sql` — profile `city` column
-
-Apply each file with the Neon SQL Editor, or `psql`:
-
-```bash
-cd backend
-psql "$DATABASE_URL" -f migrations/001_schema.sql
-psql "$DATABASE_URL" -f migrations/002_functions.sql
-psql "$DATABASE_URL" -f migrations/003_seed.sql
-psql "$DATABASE_URL" -f migrations/004_ticket_checkin.sql
-psql "$DATABASE_URL" -f migrations/005_user_profile.sql
-```
-
-### Create an admin
-
-```sql
-CREATE EXTENSION IF NOT EXISTS pgcrypto;
-
-INSERT INTO users (email, password_hash, full_name, role)
-VALUES ('admin@gmail.com', crypt('Test@123', gen_salt('bf', 10)), 'Admin', 'admin')
-ON CONFLICT (email) DO UPDATE
-SET password_hash = EXCLUDED.password_hash, role = 'admin';
-```
-
----
-
-## REST API
-
-Base path: `/api`. Protected routes require `Authorization: Bearer <token>`.
-
-**Auth**
-- `POST /auth/signup`, `POST /auth/login`, `GET /auth/me`
-- `PUT /auth/me` — update profile · `POST /auth/change-password`
-- `POST /auth/forgot-password`, `POST /auth/reset-password`
-
-**Events**
-- `GET /events` — filters: `q`, `category_id`, `min_price`, `max_price`, `free`, `date_from`, `date_to`, `sort`, `order`, `limit`, `offset`
-- `GET /events/nearby?lat&lng&radius`, `GET /events/mine`
-- `GET /events/{idOrSlug}`, `POST /events`, `PUT /events/{id}`, `DELETE /events/{id}`
-- `GET /events/{id}/buyers` — organizer/admin ticket-buyer list
-- `POST /events/{id}/notify` — email an event's buyers (organizer/admin)
-
-**Interactions**
-- `POST|DELETE /events/{id}/bookmark`, `POST|DELETE /events/{id}/follow`, `GET /events/{id}/interactions`
-- `GET /me/bookmarks`, `GET /me/follows`, `GET /me/tickets`
-
-**Catalog** — `GET /categories`, `GET /tags`
-
-**Uploads** — `POST /upload` (multipart), `DELETE /upload`
-
-**Payments & check-in** — `POST /payments/initiate`, `POST /payments/verify`, `POST /webhook/chapa`, `POST /tickets/scan` (organizer/admin QR check-in)
-
-**Admin** — `GET|POST /admin/categories`, `PUT|DELETE /admin/categories/{id}`, `PATCH /admin/categories/{id}/active`, `GET /admin/analytics`
-
----
 
 ## Testing
 
